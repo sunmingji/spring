@@ -1,0 +1,13 @@
+# 端口号
+server:
+  port: 9099
+
+logging:
+  level:
+    root: info
+
+spring:
+  application:
+    name: spring-webflux-security
+
+
