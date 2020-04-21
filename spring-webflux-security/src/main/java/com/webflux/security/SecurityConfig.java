@@ -15,6 +15,8 @@ import org.springframework.security.authentication.DelegatingReactiveAuthenticat
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
 import org.springframework.security.authorization.AuthorityReactiveAuthorizationManager;
+import org.springframework.security.authorization.AuthorizationDecision;
+import org.springframework.security.authorization.ReactiveAuthorizationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
@@ -176,7 +178,7 @@ public class SecurityConfig {
 			//根据username获取用户信息
 
 			String passwd = SecurityController.loginMap.get(username);
-			UserDetails result = userBuilder.username(username).password(PASSWD).authorities(authorityArray).passwordEncoder(encoder::encode).build();
+			UserDetails result = userBuilder.username(username).password(passwd).authorities(authorityArray).passwordEncoder(encoder::encode).build();
 			return result == null ? Mono.empty() : Mono.just(User.withUserDetails(result).build());
 		};
 	}
@@ -253,10 +255,15 @@ public class SecurityConfig {
 
 //			Arrays.stream(AUTH_WHITELIST).map(s -> new StringBuffer(s));
 
+			ReactiveAuthorizationManager reactiveAuthorizationManager = null;
+
 			ServerWebExchangeMatchers.pathMatchers(AUTH_WHITELIST)
 					.matches(exchange)
 					.map(matchResult -> matchResult.isMatch())
-					.subscribe(IgnoreAuthWhitelist::set);
+					.filter(match -> match)
+//					.map(matchResult -> {return reactiveAuthorizationManager;})
+					.subscribe(IgnoreAuthWhitelist::set)
+			;
 
 			//日志跟踪
 			/*ServerWebExchangeMatchers.pathMatchers(AUTH_WHITELIST)
@@ -270,11 +277,15 @@ public class SecurityConfig {
 				return chain.filter(exchange);
 			}
 
+			//TODO 无需权限即可访问的接口
+			reactiveAuthorizationManager = (a, e) -> { return Mono.just(new AuthorizationDecision(true));};
+
 			DelegatingReactiveAuthorizationManager.Builder builder = DelegatingReactiveAuthorizationManager.builder();
 
 			AuthorityReactiveAuthorizationManager authorityManager = AuthorityReactiveAuthorizationManager.hasAuthority(path);
 
-			//参考 org.springframework.security.config.web.server.ServerHttpSecurity.AuthorizeExchangeSpec.Access
+
+			//REFER org.springframework.security.config.web.server.ServerHttpSecurity.AuthorizeExchangeSpec.Access
 			builder.add(new ServerWebExchangeMatcherEntry<>(
 					ServerWebExchangeMatchers.pathMatchers(path), authorityManager));
 
@@ -284,7 +295,7 @@ public class SecurityConfig {
 
 			DelegatingReactiveAuthorizationManager manager = builder.build();
 
-			//参考 org.springframework.security.web.server.authorization.AuthorizationWebFilter.filter
+			//REFER org.springframework.security.web.server.authorization.AuthorizationWebFilter.filter
 			return ReactiveSecurityContextHolder.getContext()
 					.filter(c -> c.getAuthentication() != null)
 					.map(SecurityContext::getAuthentication)
