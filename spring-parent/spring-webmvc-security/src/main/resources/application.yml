@@ -1,6 +1,6 @@
 # 端口号
 server:
-  port: 9100
+  port: 9101
 
 logging:
   level:
@@ -10,5 +10,5 @@ logging:
 
 spring:
   application:
-    name: spring-web-configuration
+    name: spring-webmvc-security
 
