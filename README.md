@@ -43,6 +43,9 @@ curl -X POST \
 #### spring-webmvc-sercurity
 
 `resetfulApi`
+
+`reason : 拓展性强完全自定义登录 不局限于security(禁用了form) 弃用了security认证链(也是走security认证链,最主要是把用户信息存到security中)`
+
 ```shell
     
     登录接口
@@ -56,7 +59,7 @@ curl -X POST \
         	"passwd": "password"
         }'
         
-        或者使用
+    或者使用
         curl -X POST \
           http://127.0.0.1:9101/login \
           -H 'Content-Type: application/x-www-form-urlencoded' \
