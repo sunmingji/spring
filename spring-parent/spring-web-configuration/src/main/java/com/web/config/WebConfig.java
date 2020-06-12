@@ -10,7 +10,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -25,16 +25,16 @@ import java.util.List;
 @Slf4j
 @Configuration
 @EnableWebMvc
-public class WebConfig implements WebMvcConfigurer {
+public class WebConfig extends WebMvcConfigurerAdapter {
 
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-		WebMvcConfigurer.super.addArgumentResolvers(resolvers);
+//		WebMvcConfigurer.super.addArgumentResolvers(resolvers);
 
 		List<HttpMessageConverter<?>> converters = new ArrayList<>();
 		//添加消息转换器
 		converters.add(new MappingJackson2HttpMessageConverter());
-//		converters.add(new FastJsonHttpMessageConverter());
+//		converters.add(new FastJsonHttpMessageConverter());BasicErrorController
 
 		//消息转换器与Resolver绑定
 		resolvers.add(new CustomMessageConverterMethodArgumentResolver(converters));
@@ -43,7 +43,7 @@ public class WebConfig implements WebMvcConfigurer {
 
 	@Override
 	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-		WebMvcConfigurer.super.configureMessageConverters(converters);
+//		WebMvcConfigurer.super.configureMessageConverters(converters);
 
 	}
 

@@ -5,6 +5,7 @@ import com.web.config.CustomRequestBody;
 import com.web.model.Dept;
 import com.web.model.User;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,5 +34,15 @@ public class Controller {
 		data.put("deptList", deptList);
 
 		return data;
+	}
+
+	@GetMapping("/exception")
+	public JSONObject exception() throws Exception {
+
+		int i = 0;
+//		i = 1/0;
+
+		throw new RuntimeException("1312");
+//		return new JSONObject();
 	}
 }

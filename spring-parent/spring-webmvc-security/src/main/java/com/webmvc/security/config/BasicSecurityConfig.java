@@ -1,9 +1,12 @@
 package com.webmvc.security.config;
 
 import com.webmvc.security.config.security.filter.AuthenticationFilter;
+import com.webmvc.security.config.security.provider.MobileCodeAuthenticationProvider;
+import com.webmvc.security.config.security.provider.UsernamePasswordAuthenticationProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -67,6 +70,29 @@ public class BasicSecurityConfig extends WebSecurityConfigurerAdapter {
 		};
 	}
 
+	/**
+	 * 多种登录方式(登录也走security认证方式)
+	 * com.webmvc.security.controlelr.LoginController#loginJsonByAuth(com.webmvc.security.model.Login)
+	 * 这里都未使用AbstractAuthenticationProcessingFilter 都是直接在method的中直接认证
+	 *
+	 * refer https://www.jianshu.com/p/779d3071e98d
+	 *
+	 * @author sunmj
+	 * @date 2020/6/12
+	 */
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth
+				.authenticationProvider(new MobileCodeAuthenticationProvider())
+				.authenticationProvider(new UsernamePasswordAuthenticationProvider());
+	}
+
+	/**
+	 *
+	 *
+	 * @author sunmj
+	 * @date 2020/6/12
+	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
@@ -80,10 +106,10 @@ public class BasicSecurityConfig extends WebSecurityConfigurerAdapter {
 				.accessDeniedHandler(accessDeniedHandler())
 			.and()
 			.authorizeRequests()
-				.antMatchers("/auth/**", "/login**").permitAll()//无需认证资源
+				.antMatchers("/auth/**", "/login**", "/loginJsonByAuth").permitAll()//无需认证资源
 				.antMatchers("/dept/**").hasRole("DEPT")//游客信息
 				.antMatchers("/user/**").hasRole("USER")//用户信息
-				.anyRequest().authenticated()//其他全部需要认证
+				.anyRequest().authenticated()//其他全部需要认证(需要token才能访问)
 			.and()
 //			.userDetailsService(userDetailsService())
 			;
