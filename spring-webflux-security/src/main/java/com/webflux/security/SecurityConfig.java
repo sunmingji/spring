@@ -314,7 +314,7 @@ public class SecurityConfig {
 	ServerAccessDeniedHandler accessDeniedHandler(){
 
 		return (exchange, denied) -> {
-			return Mono.defer(() -> Mono.just(exchange.getResponse()))
+			Mono<Void> voidMono = Mono.defer(() -> Mono.just(exchange.getResponse()))
 					.flatMap(response -> {
 						response.setStatusCode(HttpStatus.FORBIDDEN);
 						response.getHeaders().setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -322,8 +322,10 @@ public class SecurityConfig {
 						DataBuffer buffer = dataBufferFactory.wrap(String.format("{\"msg\" : \"%s\"}", HttpStatus.FORBIDDEN.getReasonPhrase()).getBytes(
 								Charset.defaultCharset()));
 						return response.writeWith(Mono.just(buffer))
-								.doOnError( error -> DataBufferUtils.release(buffer));
+								.doOnError(error -> DataBufferUtils.release(buffer));
 					});
+
+			return voidMono;
 		};
 	}
 
@@ -337,7 +339,7 @@ public class SecurityConfig {
 	ServerAuthenticationEntryPoint serverAuthenticationEntryPoint(){
 
 		return (exchange, e) -> {
-			return Mono.defer(() -> Mono.just(exchange.getResponse()))
+			Mono<Void> voidMono = Mono.defer(() -> Mono.just(exchange.getResponse()))
 					.flatMap(response -> {
 						response.setStatusCode(HttpStatus.UNAUTHORIZED);
 						response.getHeaders().setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -345,8 +347,10 @@ public class SecurityConfig {
 						DataBuffer buffer = dataBufferFactory.wrap(String.format("{\"msg\" : \"%s\"}", HttpStatus.UNAUTHORIZED.getReasonPhrase()).getBytes(
 								Charset.defaultCharset()));
 						return response.writeWith(Mono.just(buffer))
-								.doOnError( error -> DataBufferUtils.release(buffer));
+								.doOnError(error -> DataBufferUtils.release(buffer));
 					});
+
+			return voidMono;
 		};
 	}
 
