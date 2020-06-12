@@ -1,0 +1,14 @@
+# 端口号
+server:
+  port: 9102
+
+logging:
+  level:
+    root: info
+    #org.apache.coyote.http11: debug #查看springmvc接收http报文
+    #com.cloud.consumer.feign: debug #查看feign发送http报文
+
+spring:
+  application:
+    name: spring-server
+
