@@ -79,6 +79,7 @@ public class SecurityConfig {
 	 */
 	@Bean
 	ReactiveAuthenticationManager reactiveAuthenticationManager() {
+
 		final ReactiveUserDetailsService detailsService = userDetailsService();
 		LinkedList<ReactiveAuthenticationManager> managers = new LinkedList<>();
 		managers.add(authentication -> {
@@ -170,7 +171,7 @@ public class SecurityConfig {
 			//TODO 这里是固定权限需要从redis拉取权限
 			String[] authorityArray = Arrays.asList("/loginRob", "/getAuthorities", "/ucenter-web/oneself/permissions").toArray(new String[]{});
 
-			log.info(" username : {} ", username);
+			log.info("userDetailsService username : {} ", username);
 
 			PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 			User.UserBuilder userBuilder = User.builder();
@@ -210,7 +211,7 @@ public class SecurityConfig {
 	 * @author sunmj
 	 * @date 2019/11/19
 	 */
-	@Bean
+//	@Bean
 	AuthenticationWebFilter authenticationWebFilter() {
 		AuthenticationWebFilter authenticationWebFilter = new AuthenticationWebFilter(reactiveAuthenticationManager());
 
@@ -246,12 +247,12 @@ public class SecurityConfig {
 	 * @author sunmj
 	 * @date 2019/11/21
 	 */
-	@Bean
+//	@Bean
 	WebFilter accessWebFilter(){
 
 		return (exchange, chain) -> {
 			String path = exchange.getRequest().getPath().pathWithinApplication().value();
-//			log.info("path : {}", path);
+			log.info("accessWebFilter path : {}", path);
 
 //			Arrays.stream(AUTH_WHITELIST).map(s -> new StringBuffer(s));
 
@@ -260,8 +261,7 @@ public class SecurityConfig {
 			ServerWebExchangeMatchers.pathMatchers(AUTH_WHITELIST)
 					.matches(exchange)
 					.map(matchResult -> matchResult.isMatch())
-					.filter(match -> match)
-//					.map(matchResult -> {return reactiveAuthorizationManager;})
+//					.filter(match -> match).map(matchResult -> {return reactiveAuthorizationManager;})
 					.subscribe(IgnoreAuthWhitelist::set)
 			;
 
