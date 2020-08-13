@@ -45,7 +45,7 @@ public class LoginController {
 	 * @date 2020/6/12
 	 */
 	@RequestMapping("/login")
-	public JSONObject login(@RequestParam String userName, String passwd){
+	public JSONObject login(@RequestParam String userName, @RequestParam String passwd){
 
 		JSONObject data = new JSONObject();
 
@@ -70,7 +70,7 @@ public class LoginController {
 	 * @date 2020/4/29
 	 */
 	@RequestMapping("/loginMobile")
-	public JSONObject loginMobile(@RequestParam String mobile, String code){
+	public JSONObject loginMobile(@RequestParam String mobile, @RequestParam String code){
 
 		JSONObject data = new JSONObject();
 		//TODO verify code by mobile

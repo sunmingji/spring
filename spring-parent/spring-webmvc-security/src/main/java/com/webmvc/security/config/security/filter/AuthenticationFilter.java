@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * 类注释
+ * 拦截验证token是否有效
  *
  * @author sunmingji
  * @date 2020-04-28

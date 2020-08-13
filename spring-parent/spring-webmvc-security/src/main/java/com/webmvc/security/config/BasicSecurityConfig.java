@@ -97,22 +97,22 @@ public class BasicSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 
 		http.csrf().disable()
-				.formLogin().disable()
-				.httpBasic().disable()
-				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)//基于token，所以不需要session
-			.and()
-			.exceptionHandling()
-				.authenticationEntryPoint(authenticationEntryPoint())
-				.accessDeniedHandler(accessDeniedHandler())
-			.and()
-			.authorizeRequests()
-				.antMatchers("/auth/**", "/login**", "/loginJsonByAuth").permitAll()//无需认证资源
-				.antMatchers("/dept/**").hasRole("DEPT")//游客信息
-				.antMatchers("/user/**").hasRole("USER")//用户信息
-				.anyRequest().authenticated()//其他全部需要认证(需要token才能访问)
-			.and()
+			.formLogin().disable()
+			.httpBasic().disable()
+			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)//基于token，所以不需要session
+		.and()
+		.exceptionHandling()
+			.authenticationEntryPoint(authenticationEntryPoint())
+			.accessDeniedHandler(accessDeniedHandler())
+		.and()
+		.authorizeRequests()
+			.antMatchers("/auth/**", "/login**", "/loginJsonByAuth").permitAll()//无需认证资源
+			.antMatchers("/dept/**").hasRole("DEPT")//游客信息
+			.antMatchers("/user/**").hasRole("USER")//用户信息
+			.anyRequest().authenticated()//其他全部需要认证(需要token才能访问)
+		.and()
 //			.userDetailsService(userDetailsService())
-			;
+		;
 		http.addFilterAt(new AuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
 //		super.configure(http);
