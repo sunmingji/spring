@@ -1,0 +1,6 @@
+spring:
+  profiles: local
+  redis:
+    host: 192.168.6.110
+    port: 6385
+    password: root

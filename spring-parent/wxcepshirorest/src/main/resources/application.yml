@@ -1,0 +1,9 @@
+
+server:
+  port:  13010
+  tomcat:
+    uri-encoding: UTF-8 # 配置Tomcat编码，默认为UTF-8
+
+spring:
+  application:
+    name: wxcep-shiro
