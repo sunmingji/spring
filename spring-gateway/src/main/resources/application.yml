@@ -1,0 +1,34 @@
+# 端口号
+server:
+  port: 9090
+
+debug: false
+
+logging:
+  level:
+    root: info
+
+spring:
+  application:
+    name: spring-cloud-gateway-sample
+  cloud:
+    gateway:
+      routes:
+        - id: wxcepClient1
+          uri: http://192.168.3.10
+          predicates:
+            # 匹配路径转发
+            - Path=/wxcepClient1/**
+        - id: ucenter-web
+          uri: http://192.168.3.11
+          predicates:
+            # 匹配路径转发
+            - Path=/ucenter-web/**
+        - id: wyms
+          uri: http://192.168.3.12
+          predicates:
+            # 匹配路径转发
+            - Path=/wyms/**
+#          filters:
+#            - RewritePath=/wyms/(?<segment>.*), /$\{segment}
+

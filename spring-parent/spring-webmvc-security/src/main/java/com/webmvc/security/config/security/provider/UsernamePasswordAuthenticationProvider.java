@@ -1,7 +1,7 @@
 package com.webmvc.security.config.security.provider;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -18,6 +18,7 @@ import java.util.Set;
  * @author sunmingji
  * @date 2020-06-12
  */
+@Slf4j
 public class UsernamePasswordAuthenticationProvider implements AuthenticationProvider {
 
 	@Override
@@ -25,7 +26,7 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
 		String username = (authentication.getPrincipal() == null) ? "NONE_PROVIDED" : authentication.getName();
 		String password = (String) authentication.getCredentials();
 		User user = null; //TODO 返回User
-		if (null == user) {
+		/*if (null == user) {
 			throw new BadCredentialsException("用户不存在");
 		}
 		if (password.length() != 32) {
@@ -33,7 +34,7 @@ public class UsernamePasswordAuthenticationProvider implements AuthenticationPro
 		}
 		if (!password.equals("$PASSWD")) {
 			throw new BadCredentialsException("用户名或密码不正确");
-		}
+		}*/
 		UsernamePasswordAuthenticationToken result = new UsernamePasswordAuthenticationToken(username, password, listUserGrantedAuthorities(0l));
 		result.setDetails(authentication.getDetails());
 		return result;
